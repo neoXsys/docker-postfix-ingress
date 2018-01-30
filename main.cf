@@ -1,0 +1,13 @@
+queue_directory = /var/spool/postfix
+command_directory = /usr/sbin
+daemon_directory = /usr/libexec/postfix
+data_directory = /var/lib/postfix
+
+mail_owner = postfix
+setgid_group = postdrop
+
+
+inet_interfaces = all
+inet_protocols = ipv4
+
+
