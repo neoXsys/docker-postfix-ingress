@@ -6,8 +6,80 @@ data_directory = /var/lib/postfix
 mail_owner = postfix
 setgid_group = postdrop
 
+myhostname = mx1-in1.phx1.jivehosted.com
+smtpd_banner = $myhostname ESMTP $mail_name
 
 inet_interfaces = all
 inet_protocols = ipv4
 
+mydestination = $myhostname, localhost.$mydomain, localhost, localhost.localdomain
+
+unknown_local_recipient_reject_code = 550
+
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+
+header_checks = regexp:$config_directory/header_checks
+
+default_destination_concurrency_limit = 40
+
+debug_peer_level = 2
+debugger_command =
+         PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin
+         xxgdb $daemon_directory/$process_name $process_id & sleep 5
+
+sendmail_path = /usr/sbin/sendmail.postfix
+newaliases_path = /usr/bin/newaliases.postfix
+mailq_path = /usr/bin/mailq.postfix
+
+html_directory = no
+
+mailbox_size_limit = 102400000
+message_size_limit = 102400000
+
+transport_maps = hash:$config_directory/transport
+
+# Added from HOSTSERV-100
+# bounce_queue_lifetime to match existing maximal_queue_lifetime setting of 2d
+maximal_queue_lifetime = 2d
+bounce_queue_lifetime = 2d
+
+# Added from HOSTSERV-100 - this will give up on crap servers faster
+smtp_connect_timeout = 15s
+
+# disable smtp-vrfy TW20091105
+disable_vrfy_command = yes
+#sender_canonical_maps = regexp:$config_directory/sender_canonical
+
+# TLS
+smtp_tls_security_level = may
+smtpd_tls_key_file = /etc/postfix/certs/local/inbound1.phx1.jivehosted.com.key
+smtpd_tls_cert_file = /etc/postfix/certs/local/inbound1.phx1.jivehosted.com.crt
+smtpd_tls_loglevel = 1
+smtpd_tls_received_header = yes
+smtpd_tls_session_cache_timeout = 3600s
+tls_random_source = dev:/dev/urandom
+smtpd_tls_security_level = may
+smtpd_tls_auth_only = no
+smtp_tls_CApath = /etc/postfix/certs/ca
+
+# Incoming email configuration
+
+smtp_tls_protocols = !SSLv2, !SSLv3
+smtpd_tls_protocols = !SSLv2, !SSLv3
+
+virtual_mailbox_limit = 102400000
+
+relay_domains = hash:$config_directory/transport
+#recipient_canonical_maps = hash:/etc/postfix/recipient_canonical
+
+virtual_mailbox_domains = ams1.jivehosted.com communities.quest.com ewr1.jivehosted.com hosted.jivesoftware.com jivecustom.com jiveon.com lhr1.jivehosted.com mail.sbcommunity.bankofamerica.com questcommunitymail.com phx1.jivehosted.com sbcommunity.bankofamerica.com sgaur.hosted.jivesoftware.com sgtc2.hosted.jivesoftware.com support.kinaxis.com tech.netapp.com turkey.jivehosted.com
+virtual_mailbox_maps = hash:$config_directory/virtual_mailbox
+virtual_alias_domains = community.mcafee.com
+#virtual_alias_maps = hash:$config_directory/virtual
+
+virtual_mailbox_base = /mnt/mxboxes
+virtual_minimum_uid = 100
+virtual_uid_maps = static:920
+virtual_gid_maps = static:920
 

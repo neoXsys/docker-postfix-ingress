@@ -1,7 +1,6 @@
 # Postfix
 
 Postfix ingress controller which anyone can run to update the transport of application on run time.
-Get the Docker image here https://hub.docker.com/r/vparashar/centos-postfix/
 
 ## Description
 
@@ -25,6 +24,7 @@ kubectl expose deployment mail-ingress --type=NodePort --name mail-ingress
 
 ## Diagram
 
+![alt text](./images/ingress.png)
 
 For example if you have a application name app1
 
@@ -49,4 +49,4 @@ server - internal cluster IP of the smtp service
 ## Options
 
 ## Maintainer
-Vikas Parashar <vikas.parashar@scalemonks.com>
+Vikas Parashar <vikas.parashar@aurea.com>

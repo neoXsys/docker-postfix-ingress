@@ -11,6 +11,7 @@ ADD https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 /tmp/jq
 RUN ["/bin/sh", "-c", " chmod +x /tmp/kubectl"]
 RUN ["/bin/sh", "-c", " chmod +x /tmp/jq"]
 RUN ["/bin/sh", "-c", " chmod +x /tmp/transport.sh"]
+RUN ["/bin/sh", "-c", " touch /etc/postfix/transport; postmap hash:/etc/postfix/transport"]
 
 RUN cp /tmp/kubectl /usr/bin/
 RUN cp /tmp/jq /usr/bin/
@@ -21,4 +22,4 @@ ADD main.cf /etc/postfix/
 
 EXPOSE 25
 
-cmd ["sh", "-c", "service crond start ; nohup /tmp/transport.sh  &>> /var/log/messages; service rsyslog start; service postfix start ; tail -F /var/log/maillog"]
+cmd ["sh", "-c", "nohup /tmp/transport.sh  &>> /var/log/messages"]

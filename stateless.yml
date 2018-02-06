@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-ctrl
+  labels:
+    app: postfix
+spec:
+  ports:
+  - port: 25
+    name: ingess-ctrl
+  clusterIP: None
+  selector:
+    app: postfix
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ingress-ctrl
+spec:
+  selector:
+    matchLabels:
+      app: postfix # has to match .spec.template.metadata.labels
+  serviceName: "ingress-ctrl"
+  replicas: 3 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: postfix # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: postfix
+        image: vparashar/centos-postfix
+        ports:
+        - containerPort: 25
+          name: postfix
+        volumeMounts:
+        - name: email
+          mountPath: /var/spool/mail
+  volumeClaimTemplates:
+  - metadata:
+      name: email
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: my-storage-class
+      resources:
+        requests:
+          storage: 1Gi
